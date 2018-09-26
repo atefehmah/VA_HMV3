@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+  <title>Vega Lite Bar Chart</title>
+  <meta charset="utf-8">
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@4.2.0/build/vega.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6/build/vega-lite.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.19.2/build/vega-embed.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+  <style media="screen">
+    /* Add space between Vega-Embed links  */
+    html , body { 
+        width:100%;
+        height: 100%;
+    }
+    .vega-actions a {
+      margin-right: 5px;
+    }
+    #map{
+        width:50%;
+        height: 100%;
+        float: left;
+    }
+    #bar{
+        width:50%;
+        height: 100%;
+        float: left;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container for the visualization -->
+  <div id="map"></div>
+<div id="bar"></div>
+  <script>
+  // Assign the specification to a local variable vlSpec.
+  var width = $("#map").width() - 200;
+  var height = $("#map").height() - 100;
+
+  var vlSpec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v2.1.json",
+  "width": width,
+  "height": height,
+  "data": {
+    "url": "data/us-10m.json",
+    "format": {
+      "type": "topojson",
+      "feature": "states"
+    }
+  },
+  "transform": [{
+    "lookup": "id",
+    "from": {
+      "data": {
+        "url": "data/dataSum.csv"
+      },
+      "key": "id",
+      "fields": ["amount"]
+    }
+  }],
+  "projection": {
+    "type": "albersUsa"
+  },
+  "mark": "geoshape",
+  "encoding": {
+    "color": {
+      "field": "amount",
+      "type": "quantitative"
+    }
+  }
+}
+
+var bar = {
+    "width": width,
+  "height": height,
+  "data": { "url": "data/descsum.csv"},
+  "mark": "bar",
+  "encoding": {
+    "y": {
+      "field": "desc", "type": "ordinal",
+      "scale": {"rangeStep": 17},
+      "sort": {"field": "amount"}
+    },
+    "x": {
+      "field": "amount", "type": "quantitative",
+      "axis": {"title": "bbasdbasd"}
+    }
+  }
+}
+
+  // Embed the visualization in the container with id `vis`
+  vegaEmbed("#map", vlSpec);
+  vegaEmbed("#bar", bar);
+  </script>
+</body>
+</html>
